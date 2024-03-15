@@ -15,7 +15,7 @@ public class MoneyConverter {
     public static String parse(BigDecimal value) {
         String pattern = "###,###.##";
         java.text.DecimalFormat decimalFormat = new java.text.DecimalFormat(pattern);
-        return decimalFormat.format(value) + " VNĐ";
+        return decimalFormat.format(value) + " đ";
     }
     
     public static void main(String[] args) {
