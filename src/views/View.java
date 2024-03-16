@@ -12,6 +12,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
@@ -23,12 +24,21 @@ import request.ProductsRequest;
 import request.ProductsSearchRequest;
 import response.BrandResponse;
 import response.CategoryResponse;
+import response.ColorResponse;
+import response.MaterialResponse;
+import request.ProductDetailRequest;
 import response.ProductDetailResponse;
 import response.ProductsResponse;
+import response.SizeResponse;
+import response.SoleShoesResponse;
 import service.impl.BrandServiceImpl;
 import service.impl.CategoryServiceImpl;
+import service.impl.ColorServiceImpl;
+import service.impl.MaterialServiceImpl;
 import service.impl.ProductDetailServiceImpl;
 import service.impl.ProductsServiceImpl;
+import service.impl.SizeServiceImpl;
+import service.impl.SoleServiceImpl;
 import util.MoneyConverter;
 
 /**
@@ -46,6 +56,10 @@ public class View extends javax.swing.JFrame {
     private CategoryServiceImpl categoryServiceImpl = new CategoryServiceImpl();
     private BrandServiceImpl brandServiceImpl = new BrandServiceImpl();
     private ProductDetailServiceImpl productDetailServiceImpl = new ProductDetailServiceImpl();
+    private ColorServiceImpl colorServiceImpl = new ColorServiceImpl();
+    private SoleServiceImpl soleServiceImpl = new SoleServiceImpl();
+    private MaterialServiceImpl materialServiceImpl = new MaterialServiceImpl();
+    private SizeServiceImpl sizeServiceImpl = new SizeServiceImpl();
 
     /**
      * Creates new form View
@@ -87,39 +101,70 @@ public class View extends javax.swing.JFrame {
         //Brand
         cbbHang.removeAllItems();
         cbbHang.addItem("");
-        for (BrandResponse brandResponse : brandServiceImpl.getAllBrand()) {
-            cbbHang.addItem(brandResponse.getBrandName());
-        }
         cbbTimHang.removeAllItems();
         cbbTimHang.addItem("");
-        for (BrandResponse brandResponse : brandServiceImpl.getAllBrand()) {
-            cbbTimHang.addItem(brandResponse.getBrandName());
+        for (BrandResponse item : brandServiceImpl.getAllBrand()) {
+            if (item.getStatus()) {
+                cbbHang.addItem(item.getBrandName());
+                cbbTimHang.addItem(item.getBrandName());
+            }
         }
 
         //Category
         cbbTheLoai.removeAllItems();
         cbbTheLoai.addItem("");
-        for (CategoryResponse categoryResponse : categoryServiceImpl.getAllCategory()) {
-            cbbTheLoai.addItem(categoryResponse.getCategoryName());
-        }
         cbbTimTheLoai.removeAllItems();
         cbbTimTheLoai.addItem("");
-        for (CategoryResponse categoryResponse : categoryServiceImpl.getAllCategory()) {
-            cbbTimTheLoai.addItem(categoryResponse.getCategoryName());
-        }
-        pnaListProducts.addEventPagination(new EventPagination() {
-            @Override
-            public void pageChanged(int page) {
-                showListProductsByPage(page, listProducts);
+        for (CategoryResponse item : categoryServiceImpl.getAllCategory()) {
+            if (item.getStatus()) {
+                cbbTheLoai.addItem(item.getCategoryName());
+                cbbTimTheLoai.addItem(item.getCategoryName());
             }
-        });
-        
+        }
+
+        //Color
+        cbbMauSac.removeAllItems();
+        cbbMauSac.addItem("");
+        for (ColorResponse item : colorServiceImpl.getAllColor()) {
+            if (item.getStatus()) {
+                cbbMauSac.addItem(item.getColorName());
+            }
+        }
+
+        //Material
+        cbbChatLieu.removeAllItems();
+        cbbChatLieu.addItem("");
+        for (MaterialResponse item : materialServiceImpl.getAllMaterial()) {
+            if (item.getStatus()) {
+                cbbChatLieu.addItem(item.getMaterialName());
+            }
+        }
+
+        //Size
+        cbbSize.removeAllItems();
+        cbbSize.addItem("");
+        for (SizeResponse item : sizeServiceImpl.getAllSize()) {
+            if (item.getStatus()) {
+                cbbSize.addItem(item.getSizeName());
+            }
+        }
+
+        //Sole
+        cbbDeGiay.removeAllItems();
+        cbbDeGiay.addItem("");
+        for (SoleShoesResponse item : soleServiceImpl.getAllSole()) {
+            if (item.getStatus() == true) {
+                cbbDeGiay.addItem(item.getSoleName());
+            }
+        }
+
         //Mã sản phẩm
         cbbMaSanPham.removeAllItems();
         cbbMaSanPham.addItem("");
         for (ProductsResponse item : listProducts) {
             cbbMaSanPham.addItem(item.getId());
         }
+
     }
 
     private void setAllEventComponent() {
@@ -150,6 +195,15 @@ public class View extends javax.swing.JFrame {
                 String id = String.valueOf(cbbMaSanPham.getSelectedItem());
                 if (id.equalsIgnoreCase("")) {
                     id = null;
+                    clearFormProductDetail();
+                }
+                for (ProductsResponse item : productsServiceImpl.getAllProducts()) {
+                    if (id != null) {
+                        if (id.equalsIgnoreCase(item.getId())) {
+                            lbTenSanPham.setText(item.getProductName());
+                            break;
+                        }
+                    }
                 }
                 listProductDetail = productDetailServiceImpl.getAllProductDetail(id);
                 showListProductDetailByPage(1, listProductDetail);
@@ -183,35 +237,115 @@ public class View extends javax.swing.JFrame {
                 }
             }
         });
+        pnaListProducts.addEventPagination(new EventPagination() {
+            @Override
+            public void pageChanged(int page) {
+                showListProductsByPage(page, listProducts);
+            }
+        });
+        pnaListProductDetail.addEventPagination(new EventPagination() {
+            @Override
+            public void pageChanged(int page) {
+                showListProductDetailByPage(page, listProductDetail);
+            }
+        });
     }
 
     //START: update view
-    public void updateComboboxHang() {
+    public void updateComboboxHang(String method) {
+        int lastIndex = 0;
         cbbHang.removeAllItems();
         cbbHang.addItem("");
         cbbTimHang.removeAllItems();
         cbbTimHang.addItem("");
-        for (BrandResponse brandResponse : brandServiceImpl.getAllBrand()) {
-            cbbHang.addItem(brandResponse.getBrandName());
-            cbbTimHang.addItem(brandResponse.getBrandName());
+        for (BrandResponse item : brandServiceImpl.getAllBrand()) {
+            if (item.getStatus()) {
+                cbbHang.addItem(item.getBrandName());
+                cbbTimHang.addItem(item.getBrandName());
+                lastIndex++;
+            }
         }
-        cbbHang.setSelectedIndex(brandServiceImpl.getAllBrand().size());
-        Notification notification = new Notification(View.getJframe(), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Thêm hãng thành công!");
-        notification.showNotification();
+        if (method.equalsIgnoreCase("add")) {
+            cbbHang.setSelectedIndex(lastIndex);
+        }
     }
 
-    public void updateComboboxTheLoai() {
+    public void updateComboboxTheLoai(String method) {
+        int lastIndex = 0;
         cbbTheLoai.removeAllItems();
         cbbTheLoai.addItem("");
         cbbTimTheLoai.removeAllItems();
         cbbTimTheLoai.addItem("");
-        for (CategoryResponse categoryResponse : categoryServiceImpl.getAllCategory()) {
-            cbbTheLoai.addItem(categoryResponse.getCategoryName());
-            cbbTimTheLoai.addItem(categoryResponse.getCategoryName());
+        for (CategoryResponse item : categoryServiceImpl.getAllCategory()) {
+            if (item.getStatus()) {
+                cbbTimTheLoai.addItem(item.getCategoryName());
+                cbbTimTheLoai.addItem(item.getCategoryName());
+                lastIndex++;
+            }
         }
-        cbbTheLoai.setSelectedIndex(categoryServiceImpl.getAllCategory().size());
-        Notification notification = new Notification(View.getJframe(), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Thêm thể loại thành công!");
-        notification.showNotification();
+        if (method.equalsIgnoreCase("add")) {
+            cbbTheLoai.setSelectedIndex(lastIndex);
+        }
+    }
+
+    public void updateComboboxMauSac(String method) {
+        int lastIndex = 0;
+        cbbMauSac.removeAllItems();
+        cbbMauSac.addItem("");
+        for (ColorResponse item : colorServiceImpl.getAllColor()) {
+            if (item.getStatus()) {
+                cbbMauSac.addItem(item.getColorName());
+                lastIndex++;
+            }
+        }
+        if (method.equalsIgnoreCase("add")) {
+            cbbMauSac.setSelectedIndex(lastIndex);
+        }
+    }
+
+    public void updateComboboxSize(String method) {
+        int lastIndex = 0;
+        cbbSize.removeAllItems();
+        cbbSize.addItem("");
+        for (SizeResponse item : sizeServiceImpl.getAllSize()) {
+            if (item.getStatus()) {
+                cbbSize.addItem(item.getSizeName());
+                lastIndex++;
+            }
+        }
+        if (method.equalsIgnoreCase("add")) {
+            cbbSize.setSelectedIndex(lastIndex);
+        }
+    }
+
+    public void updateComboboxMaterial(String method) {
+        int lastIndex = 0;
+        cbbChatLieu.removeAllItems();
+        cbbChatLieu.addItem("");
+        for (MaterialResponse item : materialServiceImpl.getAllMaterial()) {
+            if (item.getStatus()) {
+                cbbChatLieu.addItem(item.getMaterialName());
+                lastIndex++;
+            }
+        }
+        if (method.equalsIgnoreCase("add")) {
+            cbbChatLieu.setSelectedIndex(lastIndex);
+        }
+    }
+
+    public void updateComboboxSole(String method) {
+        int lastIndex = 0;
+        cbbDeGiay.removeAllItems();
+        cbbDeGiay.addItem("");
+        for (SoleShoesResponse item : soleServiceImpl.getAllSole()) {
+            if (item.getStatus()) {
+                cbbDeGiay.addItem(item.getSoleName());
+                lastIndex++;
+            }
+        }
+        if (method.equalsIgnoreCase("add")) {
+            cbbDeGiay.setSelectedIndex(lastIndex);
+        }
     }
     //END: update view
 
@@ -357,15 +491,20 @@ public class View extends javax.swing.JFrame {
     }
 
     //END: PRODUCTS
-    
     private void setDataWhenDoubleClickProducts() {
         String id = txtMaSanPham.getText();
         cbbMaSanPham.setSelectedItem(id);
+        for (ProductsResponse item : listToTableProducts) {
+            if (id.equalsIgnoreCase(item.getId())) {
+                lbTenSanPham.setText(item.getProductName());
+                break;
+            }
+        }
         listProductDetail = productDetailServiceImpl.getAllProductDetail(id);
         showListProductDetailByPage(1, listProductDetail);
         tabSanPham.setSelectedIndex(1);
     }
-    
+
     private void showListProductDetailByPage(int page, List<ProductDetailResponse> list) {
         int litmit = 6;
         int totalPage = (int) Math.ceil(((double) list.size() / litmit));
@@ -393,20 +532,169 @@ public class View extends javax.swing.JFrame {
             }
         }
     }
-    
-    
-    
+
+    private ProductDetailRequest getDataProductDetail() {
+        Long id = null;
+        for (ProductDetailResponse item : listProductDetail) {
+            if (lbTenSanPham.getText().equalsIgnoreCase(item.getProductName())) {
+                id = item.getId();
+                break;
+            }
+        }
+        String idProduct = String.valueOf(cbbMaSanPham.getSelectedItem());
+        if (idProduct.trim().isEmpty()) {
+            Notification notification = new Notification(View.getJframe(), Notification.Type.WARNING, Notification.Location.TOP_RIGHT, "Vui lòng chọn mã sản phẩm!");
+            notification.showNotification();
+            return null;
+        }
+        if (checkStringEmpty(txtGiaBanSanPham.getText())) {
+            Notification notification = new Notification(View.getJframe(), Notification.Type.WARNING, Notification.Location.TOP_RIGHT, "Vui lòng nhập giá!");
+            notification.showNotification();
+            return null;
+        }
+        if (!checkNumber(txtGiaBanSanPham.getText())) {
+            Notification notification = new Notification(View.getJframe(), Notification.Type.WARNING, Notification.Location.TOP_RIGHT, "Giá sai dữ liệu!");
+            notification.showNotification();
+            return null;
+        }
+        double price = Double.valueOf(txtGiaBanSanPham.getText().trim());
+        if (price <= 1000) {
+            Notification notification = new Notification(View.getJframe(), Notification.Type.WARNING, Notification.Location.TOP_RIGHT, "Giá phải lớn hơn 1000!");
+            notification.showNotification();
+            return null;
+        }
+        if (checkStringEmpty(txtSoLuong.getText())) {
+            Notification notification = new Notification(View.getJframe(), Notification.Type.WARNING, Notification.Location.TOP_RIGHT, "Vui lòng nhập số lượng!");
+            notification.showNotification();
+            return null;
+        }
+        if (!checkNumber(txtSoLuong.getText())) {
+            Notification notification = new Notification(View.getJframe(), Notification.Type.WARNING, Notification.Location.TOP_RIGHT, "Số lượng sai dữ liệu!");
+            notification.showNotification();
+            return null;
+        }
+        int quantiy = Integer.parseInt(txtSoLuong.getText().trim());
+        if (quantiy < 0) {
+            Notification notification = new Notification(View.getJframe(), Notification.Type.WARNING, Notification.Location.TOP_RIGHT, "Số lượng là số lớn hơn 0!");
+            notification.showNotification();
+            return null;
+        }
+        //Lấy id color
+        String colorName = String.valueOf(cbbMauSac.getSelectedItem());
+        if (checkStringEmpty(colorName)) {
+            Notification notification = new Notification(View.getJframe(), Notification.Type.WARNING, Notification.Location.TOP_RIGHT, "Vui lòng chọn màu sắc!");
+            notification.showNotification();
+            return null;
+        }
+        Long idColor = null;
+        for (ColorResponse item : colorServiceImpl.getAllColor()) {
+            if (colorName.equalsIgnoreCase(item.getColorName())) {
+                idColor = item.getId();
+                break;
+            }
+        }
+        //Lấy id size
+        String sizeName = String.valueOf(cbbSize.getSelectedItem());
+        if (checkStringEmpty(sizeName)) {
+            Notification notification = new Notification(View.getJframe(), Notification.Type.WARNING, Notification.Location.TOP_RIGHT, "Vui lòng chọn kích cỡ!");
+            notification.showNotification();
+            return null;
+        }
+        Long idSize = null;
+        for (SizeResponse item : sizeServiceImpl.getAllSize()) {
+            if (sizeName.equalsIgnoreCase(item.getSizeName())) {
+                idSize = item.getId();
+                break;
+            }
+        }
+        //Lấy id sole
+        String soleName = String.valueOf(cbbDeGiay.getSelectedItem());
+        if (checkStringEmpty(soleName)) {
+            Notification notification = new Notification(View.getJframe(), Notification.Type.WARNING, Notification.Location.TOP_RIGHT, "Vui lòng chọn đế giày!");
+            notification.showNotification();
+            return null;
+        }
+        Long idSole = null;
+        for (SoleShoesResponse item : soleServiceImpl.getAllSole()) {
+            if (soleName.equalsIgnoreCase(item.getSoleName())) {
+                idSole = item.getId();
+                break;
+            }
+        }
+        //Lấy id material
+        String materialName = String.valueOf(cbbChatLieu.getSelectedItem());
+        if (checkStringEmpty(materialName)) {
+            Notification notification = new Notification(View.getJframe(), Notification.Type.WARNING, Notification.Location.TOP_RIGHT, "Vui lòng chọn chất liệu!");
+            notification.showNotification();
+            return null;
+        }
+        Long idMaterial = null;
+        for (MaterialResponse item : materialServiceImpl.getAllMaterial()) {
+            if (materialName.equalsIgnoreCase(item.getMaterialName())) {
+                idMaterial = item.getId();
+                break;
+            }
+        }
+        Boolean status = true;
+        return new ProductDetailRequest( id,idProduct, BigDecimal.valueOf(price), quantiy, idColor, idSize, idMaterial, idSole, status);
+    }
+
+    private void showDetailProductDetail(int index) {
+        ProductDetailResponse productDetailResponse = listToTableProductDetail.get(index);
+        for (ProductsResponse item : listProducts) {
+            if (productDetailResponse.getProductName().equalsIgnoreCase(item.getProductName())) {
+                cbbMaSanPham.setSelectedItem(item.getId());
+                lbTenSanPham.setText(item.getProductName());
+                break;
+            }
+        }
+        txtGiaBanSanPham.setText(String.valueOf(productDetailResponse.getPrice().setScale(0)));
+        txtSoLuong.setText(String.valueOf(productDetailResponse.getQuantity()));
+        cbbMauSac.setSelectedItem(productDetailResponse.getColor());
+        cbbSize.setSelectedItem(productDetailResponse.getSize());
+        cbbChatLieu.setSelectedItem(productDetailResponse.getMaterial());
+        cbbDeGiay.setSelectedItem(productDetailResponse.getSoleShoes());
+    }
+
+    private void addProductDetail() {
+        if (productDetailServiceImpl.addProductDetail(getDataProductDetail())) {
+            Notification notification = new Notification(View.getJframe(), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Thêm thành công!");
+            notification.showNotification();
+            String idProduct = String.valueOf(cbbMaSanPham.getSelectedItem());
+            listProductDetail = productDetailServiceImpl.getAllProductDetail(idProduct);
+            showListProductDetailByPage(1, listProductDetail);
+        }
+    }
+
+    private void updateProductDetail() {
+        if (productDetailServiceImpl.updateProductDetail(getDataProductDetail())) {
+            Notification notification = new Notification(View.getJframe(), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Sửa thành công!");
+            notification.showNotification();
+            String idProduct = String.valueOf(cbbMaSanPham.getSelectedItem());
+            listProductDetail = productDetailServiceImpl.getAllProductDetail(idProduct);
+            showListProductDetailByPage(1, listProductDetail);
+        }
+    }
+
+    private void clearFormProductDetail() {
+        cbbMauSac.setSelectedIndex(0);
+        cbbChatLieu.setSelectedIndex(0);
+        cbbSize.setSelectedIndex(0);
+        cbbDeGiay.setSelectedIndex(0);
+        lbTenSanPham.setText("###");
+        txtGiaBanSanPham.setText("");
+        txtSoLuong.setText("");
+    }
+
     //START: Product detail
-    
     //END: Product detail
-    
-    
     //START: function validate form
     private boolean checkStringEmpty(String value) {
         return value.trim().isEmpty();
     }
 
     private boolean checkNumber(String value) {
+        value = value.trim();
         try {
             double number = Double.valueOf(value);
         } catch (Exception e) {
@@ -516,13 +804,13 @@ public class View extends javax.swing.JFrame {
         txtGiaBanSanPham = new components.TextFieldSuggestion();
         jPanel10 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
-        cbbMauSacSanPham = new components.Combobox();
+        cbbMauSac = new components.Combobox();
         jLabel10 = new javax.swing.JLabel();
-        cbbKichCoSanPham = new components.Combobox();
+        cbbSize = new components.Combobox();
         jLabel11 = new javax.swing.JLabel();
-        cbbDeGiaySanPham = new components.Combobox();
+        cbbDeGiay = new components.Combobox();
         jLabel12 = new javax.swing.JLabel();
-        cbbChatLieuSanPham = new components.Combobox();
+        cbbChatLieu = new components.Combobox();
         btnShowViewSole = new components.ButtonCustom();
         btnShowViewSize = new components.ButtonCustom();
         btnShowViewColor = new components.ButtonCustom();
@@ -537,6 +825,9 @@ public class View extends javax.swing.JFrame {
         tblListSanPhamChiTiet = new components.Table();
         cbbMaSanPham = new components.Combobox();
         pnaListProductDetail = new components.Pagination();
+        jLabel17 = new javax.swing.JLabel();
+        lbTenSanPham = new javax.swing.JLabel();
+        buttonCustom16 = new components.ButtonCustom();
         ViewNhanVien = new javax.swing.JPanel();
         ViewThongKe = new javax.swing.JPanel();
         ViewKhachHang = new javax.swing.JPanel();
@@ -787,6 +1078,11 @@ public class View extends javax.swing.JFrame {
         buttonCustom3.setColor1(new java.awt.Color(255, 51, 102));
         buttonCustom3.setColor2(new java.awt.Color(255, 0, 51));
         buttonCustom3.setFont(new java.awt.Font("Source Sans Pro SemiBold", 1, 14)); // NOI18N
+        buttonCustom3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonCustom3ActionPerformed(evt);
+            }
+        });
 
         buttonCustom4.setText("Làm mới");
         buttonCustom4.setColor1(new java.awt.Color(0, 153, 255));
@@ -1394,22 +1690,22 @@ public class View extends javax.swing.JFrame {
         jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel9.setText("Màu sắc:");
 
-        cbbMauSacSanPham.setLabeText("Màu sắc");
+        cbbMauSac.setLabeText("Màu sắc");
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel10.setText("Kích cỡ:");
 
-        cbbKichCoSanPham.setLabeText("Size");
+        cbbSize.setLabeText("Size");
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel11.setText("Chất liệu:");
 
-        cbbDeGiaySanPham.setLabeText("Đế giày");
+        cbbDeGiay.setLabeText("Đế giày");
 
         jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel12.setText("Đế giày:");
 
-        cbbChatLieuSanPham.setLabeText("Chất liệu");
+        cbbChatLieu.setLabeText("Chất liệu");
 
         btnShowViewSole.setText("Xem");
         btnShowViewSole.setColor1(new java.awt.Color(0, 0, 255));
@@ -1461,19 +1757,19 @@ public class View extends javax.swing.JFrame {
                     .addGroup(jPanel10Layout.createSequentialGroup()
                         .addComponent(jLabel12)
                         .addGap(18, 18, 18)
-                        .addComponent(cbbDeGiaySanPham, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(cbbDeGiay, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel9)
                             .addComponent(jLabel10))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(cbbMauSacSanPham, javax.swing.GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE)
-                            .addComponent(cbbKichCoSanPham, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(cbbMauSac, javax.swing.GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE)
+                            .addComponent(cbbSize, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(jPanel10Layout.createSequentialGroup()
                         .addComponent(jLabel11)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cbbChatLieuSanPham, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(cbbChatLieu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnShowViewSole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1487,25 +1783,25 @@ public class View extends javax.swing.JFrame {
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addGap(2, 2, 2)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cbbMauSacSanPham, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbbMauSac, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9)
                     .addComponent(btnShowViewColor, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(8, 8, 8)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cbbKichCoSanPham, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbbSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel10)
                     .addComponent(btnShowViewSize, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cbbDeGiaySanPham, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbbDeGiay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel12)
                     .addComponent(btnShowViewSole, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cbbChatLieuSanPham, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbbChatLieu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11)
                     .addComponent(btnShowViewMaterial, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(49, 49, 49))
+                .addGap(37, 37, 37))
         );
 
         jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -1515,11 +1811,21 @@ public class View extends javax.swing.JFrame {
         buttonCustom14.setColor1(new java.awt.Color(0, 255, 51));
         buttonCustom14.setColor2(new java.awt.Color(51, 255, 51));
         buttonCustom14.setFont(new java.awt.Font("Source Sans Pro SemiBold", 1, 14)); // NOI18N
+        buttonCustom14.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonCustom14ActionPerformed(evt);
+            }
+        });
 
         buttonCustom15.setText("Làm mới");
         buttonCustom15.setColor1(new java.awt.Color(0, 153, 255));
         buttonCustom15.setColor2(new java.awt.Color(0, 102, 255));
         buttonCustom15.setFont(new java.awt.Font("Source Sans Pro SemiBold", 1, 14)); // NOI18N
+        buttonCustom15.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonCustom15ActionPerformed(evt);
+            }
+        });
 
         jLabel16.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel16.setText("Số lượng:");
@@ -1546,6 +1852,11 @@ public class View extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        tblListSanPhamChiTiet.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblListSanPhamChiTietMouseClicked(evt);
+            }
+        });
         jScrollPane8.setViewportView(tblListSanPhamChiTiet);
 
         cbbMaSanPham.setLabeText("");
@@ -1553,74 +1864,95 @@ public class View extends javax.swing.JFrame {
         pnaListProductDetail.setBackground(new java.awt.Color(204, 204, 204));
         pnaListProductDetail.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
 
+        jLabel17.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel17.setText("Tên sản phẩm:");
+
+        lbTenSanPham.setText("####");
+
+        buttonCustom16.setText("Sửa");
+        buttonCustom16.setColor1(new java.awt.Color(255, 255, 0));
+        buttonCustom16.setColor2(new java.awt.Color(255, 255, 0));
+        buttonCustom16.setFont(new java.awt.Font("Source Sans Pro SemiBold", 1, 14)); // NOI18N
+        buttonCustom16.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonCustom16ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                .addGap(57, 57, 57)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel13)
+                    .addComponent(jLabel16)
+                    .addComponent(cbbMaSanPham, javax.swing.GroupLayout.PREFERRED_SIZE, 448, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtSoLuong, javax.swing.GroupLayout.PREFERRED_SIZE, 448, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addGap(57, 57, 57)
-                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel6)
-                            .addComponent(txtGiaBanSanPham, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
-                            .addComponent(jLabel13)
-                            .addComponent(jLabel16)
-                            .addComponent(cbbMaSanPham, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(txtSoLuong, javax.swing.GroupLayout.PREFERRED_SIZE, 448, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 124, Short.MAX_VALUE)
+                        .addComponent(jLabel17)
+                        .addGap(29, 29, 29)
+                        .addComponent(lbTenSanPham))
+                    .addComponent(txtGiaBanSanPham, javax.swing.GroupLayout.PREFERRED_SIZE, 448, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(23, 23, 23))
             .addGroup(jPanel8Layout.createSequentialGroup()
-                .addGap(289, 289, 289)
+                .addGap(292, 292, 292)
                 .addComponent(buttonCustom14, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(36, 36, 36)
+                .addGap(32, 32, 32)
+                .addComponent(buttonCustom16, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(106, 106, 106)
                 .addComponent(buttonCustom15, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
                 .addGap(0, 28, Short.MAX_VALUE)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel15)
                     .addComponent(pnaListProductDetail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                            .addComponent(jLabel15)
-                            .addGap(1049, 1049, 1049))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                            .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 1151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap()))))
+                    .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 1151, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(buttonCustom15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(buttonCustom14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(buttonCustom16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(25, 25, 25))
                     .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addGap(7, 7, 7)
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cbbMaSanPham, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(14, 14, 14)
-                        .addComponent(jLabel13)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtGiaBanSanPham, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel16)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtSoLuong, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(29, 29, 29)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(buttonCustom14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(buttonCustom15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(36, 36, 36)
+                        .addContainerGap()
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel8Layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cbbMaSanPham, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel17)
+                                    .addComponent(lbTenSanPham))
+                                .addGap(19, 19, 19)
+                                .addComponent(jLabel13)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtGiaBanSanPham, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel16)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtSoLuong, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 93, Short.MAX_VALUE)))
                 .addComponent(jLabel15)
-                .addGap(29, 29, 29)
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(pnaListProductDetail, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(261, Short.MAX_VALUE))
+                .addContainerGap(297, Short.MAX_VALUE))
         );
 
         tabSanPham.addTab("Chi tiết sản phẩm", jPanel8);
@@ -1879,6 +2211,32 @@ public class View extends javax.swing.JFrame {
         deleteProducts();
     }//GEN-LAST:event_btnXoaSanPhamActionPerformed
 
+    private void buttonCustom3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCustom3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_buttonCustom3ActionPerformed
+
+    private void buttonCustom14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCustom14ActionPerformed
+        // TODO add your handling code here:
+        addProductDetail();
+    }//GEN-LAST:event_buttonCustom14ActionPerformed
+
+    private void tblListSanPhamChiTietMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblListSanPhamChiTietMouseClicked
+        // TODO add your handling code here:
+        int index = tblListSanPhamChiTiet.getSelectedRow();
+        showDetailProductDetail(index);
+    }//GEN-LAST:event_tblListSanPhamChiTietMouseClicked
+
+    private void buttonCustom16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCustom16ActionPerformed
+        // TODO add your handling code here:
+        updateProductDetail();
+    }//GEN-LAST:event_buttonCustom16ActionPerformed
+
+    private void buttonCustom15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCustom15ActionPerformed
+        // TODO add your handling code here:
+        clearFormProductDetail();
+        cbbMaSanPham.setSelectedIndex(0);
+    }//GEN-LAST:event_buttonCustom15ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1959,6 +2317,7 @@ public class View extends javax.swing.JFrame {
     private components.ButtonCustom buttonCustom1;
     private components.ButtonCustom buttonCustom14;
     private components.ButtonCustom buttonCustom15;
+    private components.ButtonCustom buttonCustom16;
     private components.ButtonCustom buttonCustom3;
     private components.ButtonCustom buttonCustom4;
     private components.ButtonCustom buttonCustom5;
@@ -1966,12 +2325,12 @@ public class View extends javax.swing.JFrame {
     private components.ButtonCustom buttonCustom7;
     private components.ButtonCustom buttonCustom8;
     private components.ButtonCustom buttonCustom9;
-    private components.Combobox cbbChatLieuSanPham;
-    private components.Combobox cbbDeGiaySanPham;
+    private components.Combobox cbbChatLieu;
+    private components.Combobox cbbDeGiay;
     private components.Combobox cbbHang;
-    private components.Combobox cbbKichCoSanPham;
     private components.Combobox cbbMaSanPham;
-    private components.Combobox cbbMauSacSanPham;
+    private components.Combobox cbbMauSac;
+    private components.Combobox cbbSize;
     private components.Combobox cbbTheLoai;
     private components.Combobox cbbTimHang;
     private components.Combobox cbbTimTheLoai;
@@ -1989,6 +2348,7 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -2009,6 +2369,7 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
+    private javax.swing.JLabel lbTenSanPham;
     private components.Pagination pagination1;
     private components.PanelRound panelRound1;
     private components.Pagination pnaListProductDetail;

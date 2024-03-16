@@ -43,7 +43,7 @@ public class ViewChangeBrandProducts extends javax.swing.JDialog {
             tableModel.addRow(new Object[]{
                 i + 1,
                 item.getBrandName(),
-                item.getStatus() ? "Đang hoạt động" : "Dừng hoạt động"
+                item.getStatus() ? "Hoạt động" : "Dừng hoạt động"
             });
         }
     }
@@ -67,13 +67,17 @@ public class ViewChangeBrandProducts extends javax.swing.JDialog {
     private void addBrand() {
         if (brandServiceImpl.addBrand(getData())) {
             View view = (View) SwingUtilities.getWindowAncestor(this);
-            view.updateComboboxHang();
+            view.updateComboboxHang("add");
+            Notification notification = new Notification(View.getJframe(), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Thêm thành công!");
+            notification.showNotification();
             this.dispose();
         }
     }
 
     private void updateBrand() {
         if (brandServiceImpl.updateBrand(getData())) {
+            View view = (View) SwingUtilities.getWindowAncestor(this);
+            view.updateComboboxHang("update");
             Notification notification = new Notification(View.getJframe(), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Sửa thành công!");
             notification.showNotification();
             showDataToTable();

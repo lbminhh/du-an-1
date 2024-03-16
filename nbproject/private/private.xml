@@ -4,8 +4,11 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/FPT%20Polytechnic/JAVA%203/Project/PRO1041-SD18404-NHOM3/src/repository/ProductsRepository.java</file>
-            <file>file:/C:/FPT%20Polytechnic/JAVA%203/Project/PRO1041-SD18404-NHOM3/src/views/View.java</file>
-            <file>file:/C:/FPT%20Polytechnic/JAVA%203/Project/PRO1041-SD18404-NHOM3/src/request/ProductsSearchRequest.java</file>
+            <file>file:/C:/FPT%20Polytechnic/JAVA%203/Project/PRO1041-SD18404-NHOM3/src/request/ProductDetailRequest.java</file>
+            <file>file:/C:/FPT%20Polytechnic/JAVA%203/Project/PRO1041-SD18404-NHOM3/src/request/ProductDetailSearchRequest.java</file>
+            <file>file:/C:/FPT%20Polytechnic/JAVA%203/Project/PRO1041-SD18404-NHOM3/src/views/TestView.java</file>
+            <file>file:/C:/FPT%20Polytechnic/JAVA%203/Project/PRO1041-SD18404-NHOM3/src/response/ProductDetailResponse.java</file>
+            <file>file:/C:/FPT%20Polytechnic/JAVA%203/Project/PRO1041-SD18404-NHOM3/src/response/ProductsResponse.java</file>
         </group>
     </open-files>
 </project-private>

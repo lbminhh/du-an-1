@@ -21,5 +21,5 @@ public class SizeResponse {
     
     private String sizeName;
     
-    private boolean status;
+    private Boolean status;
 }

@@ -85,9 +85,10 @@ public class SizeRepository {
         return check > 0;
     }
 
-    public boolean deleteColor(SizeRequest sizeRequest) {
+    public boolean deleteSize(SizeRequest sizeRequest) {
+        System.out.println(sizeRequest.getSizeName());
         String query = """
-                        UPDATE dbo.color
+                        UPDATE dbo.size
                         SET status = 0
                         WHERE id = ?
                        """;

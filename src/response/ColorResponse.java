@@ -21,5 +21,5 @@ public class ColorResponse {
     
     private String colorName;
     
-    private boolean status;
+    private Boolean status;
 }

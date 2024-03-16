@@ -44,7 +44,7 @@ public class ViewChangeCategoryProducts extends javax.swing.JDialog {
             tableModel.addRow(new Object[]{
                 i + 1,
                 item.getCategoryName(),
-                item.getStatus() ? "Đang hoạt động" : "Dừng hoạt động"
+                item.getStatus() ? "Hoạt động" : "Dừng hoạt động"
             });
         }
     }
@@ -68,13 +68,17 @@ public class ViewChangeCategoryProducts extends javax.swing.JDialog {
     private void addCategory() {
         if (categoryServiceImpl.addCategory(getData())) {
             View view = (View) SwingUtilities.getWindowAncestor(this);
-            view.updateComboboxTheLoai();
+            view.updateComboboxTheLoai("add");
+            Notification notification = new Notification(View.getJframe(), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Thêm thành công!");
+            notification.showNotification();
             this.dispose();
         }
     }
 
     private void updateCategory() {
         if (categoryServiceImpl.updateCategory(getData())) {
+            View view = (View) SwingUtilities.getWindowAncestor(this);
+            view.updateComboboxTheLoai("update");
             Notification notification = new Notification(View.getJframe(), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Sửa thành công!");
             notification.showNotification();
             showDataToTable();
@@ -83,6 +87,8 @@ public class ViewChangeCategoryProducts extends javax.swing.JDialog {
 
     private void deleteCategory() {
         if (categoryServiceImpl.deleteCategory(getData())) {
+            View view = (View) SwingUtilities.getWindowAncestor(this);
+            view.updateComboboxTheLoai("update");
             Notification notification = new Notification(View.getJframe(), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Sửa thành công!");
             notification.showNotification();
             showDataToTable();

@@ -10,9 +10,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import request.MaterialRequest;
-import request.SoleShoesRequest;
 import response.MaterialResponse;
-import response.SoleShoesResponse;
 import util.DBConnect;
 
 /**

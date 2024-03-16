@@ -21,5 +21,5 @@ public class MaterialResponse {
     
     private String materialName;
     
-    private boolean status;
+    private Boolean status;
 }
