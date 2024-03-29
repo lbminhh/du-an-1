@@ -4,25 +4,32 @@
  */
 package request;
 
-import java.math.BigDecimal;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 
 /**
  *
  * @author LE MINH
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProductDetailSearchRequest {
     
-    private Long idColor;
+    private String colorName;
     
-    private Long idSize;
+    private String sizeName;
     
-    private Long idMaterial;
+    private String materialName;
     
-    private Long idSole;
+    private String soleName;
     
-    private int quantity;
+    private String idProduct;
     
-    private BigDecimal price;
+    private Boolean status;
     
-//    private 
+    private String brandName;
+    
 }

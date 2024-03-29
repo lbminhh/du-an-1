@@ -6,6 +6,7 @@ package service;
 
 import java.util.List;
 import request.ProductDetailRequest;
+import request.ProductDetailSearchRequest;
 import response.ProductDetailResponse;
 
 /**
@@ -15,6 +16,8 @@ import response.ProductDetailResponse;
 public interface ProductDetailService {
 
     int getQuantityByProductsId(String id);
+    
+    int getQuantityByProductDetail(Long id);
 
     List<ProductDetailResponse> getAllProductDetail(String id);
 
@@ -23,4 +26,12 @@ public interface ProductDetailService {
     boolean updateProductDetail(ProductDetailRequest productDetailRequest);
 
     boolean deleteProductDetail(ProductDetailRequest productDetailRequest);
+    
+    List<ProductDetailResponse> searchListProductDetail(ProductDetailSearchRequest item);
+    
+    ProductDetailResponse getProductDetailById(Long id);
+    
+    boolean setMinusQuantityProductDetail(Long id, int quantity);
+    
+    boolean setPlusQuantityProductDetail(Long id, int quantity);
 }

@@ -7,6 +7,7 @@ package service.impl;
 import java.util.List;
 import repository.ProductDetailRepository;
 import request.ProductDetailRequest;
+import request.ProductDetailSearchRequest;
 import response.ProductDetailResponse;
 import service.ProductDetailService;
 
@@ -14,8 +15,8 @@ import service.ProductDetailService;
  *
  * @author LE MINH
  */
-public class ProductDetailServiceImpl implements ProductDetailService{
-    
+public class ProductDetailServiceImpl implements ProductDetailService {
+
     private ProductDetailRepository productDetailRepository = new ProductDetailRepository();
 
     @Override
@@ -42,5 +43,30 @@ public class ProductDetailServiceImpl implements ProductDetailService{
     public boolean deleteProductDetail(ProductDetailRequest productDetailRequest) {
         return productDetailRepository.updateProductDetail(productDetailRequest);
     }
-    
+
+    @Override
+    public List<ProductDetailResponse> searchListProductDetail(ProductDetailSearchRequest item) {
+        return productDetailRepository.searchListProductDetail(item);
+    }
+
+    @Override
+    public ProductDetailResponse getProductDetailById(Long id) {
+        return productDetailRepository.getProductDetailById(id);
+    }
+
+    @Override
+    public int getQuantityByProductDetail(Long id) {
+        return productDetailRepository.getQuantityByProductDetail(id);
+    }
+
+    @Override
+    public boolean setMinusQuantityProductDetail(Long id, int quantity) {
+        return productDetailRepository.setMinusQuantityProductDetail(id, quantity);
+    }
+
+    @Override
+    public boolean setPlusQuantityProductDetail(Long id, int quantity) {
+        return productDetailRepository.setPlusQuantityProductDetail(id, quantity);
+    }
+
 }
