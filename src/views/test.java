@@ -4,9 +4,8 @@
  */
 package views;
 
-import com.raven.datechooser.EventDateChooser;
-import com.raven.datechooser.SelectedAction;
-import com.raven.datechooser.SelectedDate;
+import com.raven.chart.ModelChart;
+import java.awt.Color;
 
 /**
  *
@@ -19,15 +18,16 @@ public class test extends javax.swing.JFrame {
      */
     public test() {
         initComponents();
-        dateChooser1.addEventDateChooser(new EventDateChooser() {
-            @Override
-            public void dateSelected(SelectedAction action, SelectedDate date) {
-                System.out.println(date.getDay() + "-" + date.getMonth() + "-" + date.getYear());
-                if (action.getAction() == SelectedAction.DAY_SELECTED) {
-                    dateChooser1.hidePopup();
-                }
-            }
-        });
+//        chart.addLegend("Income", new Color(245, 189, 135));
+//        chart.addLegend("Expense", new Color(135, 189, 245));
+//        chart.addLegend("Profit", new Color(189, 135, 245));
+//        chart.addLegend("Cost", new Color(139, 229, 222));
+//        chart.addData(new ModelChart("January", new double[]{500, 200, 80, 89}));
+//        chart.addData(new ModelChart("February", new double[]{600, 750, 90, 150}));
+//        chart.addData(new ModelChart("March", new double[]{200, 350, 460, 900}));
+//        chart.addData(new ModelChart("April", new double[]{480, 150, 750, 700}));
+//        chart.addData(new ModelChart("May", new double[]{350, 540, 300, 150}));
+//        chart.addData(new ModelChart("June", new double[]{190, 280, 81, 200}));
     }
 
     /**
@@ -40,58 +40,24 @@ public class test extends javax.swing.JFrame {
     private void initComponents() {
 
         dateChooser1 = new com.raven.datechooser.DateChooser();
-        jPanel1 = new javax.swing.JPanel();
-        textFieldSuggestion1 = new components.TextFieldSuggestion();
 
         dateChooser1.setForeground(new java.awt.Color(51, 51, 255));
-        dateChooser1.setTextRefernce(textFieldSuggestion1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-
-        textFieldSuggestion1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textFieldSuggestion1ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(91, 91, 91)
-                .addComponent(textFieldSuggestion1, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(92, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(81, 81, 81)
-                .addComponent(textFieldSuggestion1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(183, Short.MAX_VALUE))
-        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGap(0, 825, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGap(0, 932, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void textFieldSuggestion1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldSuggestion1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_textFieldSuggestion1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -130,7 +96,5 @@ public class test extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.raven.datechooser.DateChooser dateChooser1;
-    private javax.swing.JPanel jPanel1;
-    private components.TextFieldSuggestion textFieldSuggestion1;
     // End of variables declaration//GEN-END:variables
 }

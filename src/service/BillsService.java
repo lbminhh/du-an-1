@@ -4,6 +4,7 @@
  */
 package service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import request.BillsRequest;
 import request.BillsSearchRequest;
@@ -25,7 +26,7 @@ public interface BillsService {
     
     boolean updateBillCustomer(String idBill, String idCustomer, String phone);
     
-    BillsRequest getBillsById(String id);
+    BillsRequest getBillsRequestById(String id);
     
     boolean isExistVoucherInBills(String idVoucher);
     
@@ -36,4 +37,18 @@ public interface BillsService {
     List<BillsResponse> getAllBills();
     
     List<BillsResponse> getAllBillsSearch(BillsSearchRequest billsSearchRequest);
+    
+    BillsResponse getBillsResponseById(String id);
+    
+    double getRevenueByMonth(int month, int year);
+    
+    BigDecimal getTotalMoneyByToday();
+    
+    BigDecimal getTotalMoneyBy7Days();
+    
+    BigDecimal getTotalMoneyByMonth();
+    
+    BigDecimal getTotalMoneyByYear();
+    
+    BigDecimal getTotalMoneyByDate(String timeStart, String timeEnd);
 }

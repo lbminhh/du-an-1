@@ -5,8 +5,8 @@
 package repository;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -189,7 +189,7 @@ public class BillsRepository {
         return check > 0;
     }
 
-    public BillsRequest getBillsById(String id) {
+    public BillsRequest getBillsRequestById(String id) {
         String query = """
                         SELECT id, customer_id, status, phone, total_money, id_voucher, payment_id, employee_id, reduce_money 
                         FROM dbo.bills
@@ -244,7 +244,7 @@ public class BillsRepository {
         }
         return check > 0;
     }
-    
+
     public List<BillsResponse> getCustomerBill(String idCustomer) {
         String query = """
                        SELECT bills.id, bills.time_create, total_money, employee.id, customer.full_name, phone, bills.status, bills.customer_id, reduce_money, id_voucher
@@ -267,7 +267,7 @@ public class BillsRepository {
         }
         return list;
     }
-    
+
     public List<BillsResponse> getAllBills() {
         String query = """
                        SELECT bills.id, bills.time_create, total_money, employee.id, customer.full_name, phone, bills.status, bills.customer_id, reduce_money, id_voucher
@@ -288,7 +288,29 @@ public class BillsRepository {
         }
         return list;
     }
-    
+
+    public BillsResponse getBillsResponseById(String id) {
+        String query = """
+                       SELECT bills.id, bills.time_create, total_money, employee.id, customer.full_name, phone, bills.status, bills.customer_id, reduce_money, id_voucher
+                       FROM dbo.bills JOIN dbo.employee ON employee.id = bills.employee_id
+                       			   JOIN dbo.customer ON customer.id = bills.customer_id
+                       WHERE bills.id = ?
+                       ORDER BY bills.time_create DESC
+                       """;
+        try (Connection con = DBConnect.getConnection(); PreparedStatement stm = con.prepareStatement(query)) {
+            stm.setString(1, id);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                return new BillsResponse(rs.getString(1), rs.getTimestamp(2), rs.getBigDecimal(3),
+                        rs.getString(4), rs.getString(5), rs.getString(6), rs.getBoolean(7), rs.getString(8), rs.getBigDecimal(9), rs.getString(10));
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+            System.out.println("1");
+        }
+        return null;
+    }
+
     public List<BillsResponse> getAllBillsSearch(BillsSearchRequest billsSearchRequest) {
         String query = """
                        DECLARE @value NVARCHAR(255), @status BIT, @payment INT, @time_start DATE, @time_end DATE
@@ -326,10 +348,126 @@ public class BillsRepository {
         return list;
     }
 
+    public double getRevenueByMonth(int month, int year) {
+        String query = """
+                     SELECT SUM(total_money) 
+                     FROM dbo.bills
+                     WHERE MONTH(time_create) = ? AND YEAR(time_create) = ? AND status = 1
+                     """;
+        try (Connection con = DBConnect.getConnection(); PreparedStatement stm = con.prepareStatement(query)) {
+            stm.setInt(1, month);
+            stm.setInt(2, year);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return 0;
+    }
+    
+    public BigDecimal getTotalMoneyByToday() {
+        String query = """
+                        SELECT SUM(total_money)
+                        FROM dbo.bills
+                        WHERE CAST(time_create AS DATE) = CAST(GETDATE() AS DATE) AND status = 1
+                       """;
+        try (Connection con = DBConnect.getConnection(); PreparedStatement stm = con.prepareStatement(query)) {
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                return rs.getBigDecimal(1);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+            System.out.println("4");
+        }
+        return null;
+    }
+    
+    public BigDecimal getTotalMoneyBy7Days() {
+        String query = """
+                        SELECT SUM(total_money)
+                        FROM dbo.bills 
+                        WHERE CAST(time_create AS DATE)  BETWEEN CAST((GETDATE() - 7) AS DATE) AND CAST(GETDATE() AS DATE) AND status = 1
+                       """;
+        try (Connection con = DBConnect.getConnection(); PreparedStatement stm = con.prepareStatement(query)) {
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                return rs.getBigDecimal(1);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+            System.out.println("4");
+        }
+        return null;
+    }
+    
+    public BigDecimal getTotalMoneyByMonth() {
+        String query = """
+                        SELECT SUM(total_money)
+                        FROM dbo.bills 
+                        WHERE CAST(time_create AS DATE)  BETWEEN CAST((GETDATE() - 31) AS DATE) AND CAST(GETDATE() AS DATE) AND status = 1
+                       """;
+        try (Connection con = DBConnect.getConnection(); PreparedStatement stm = con.prepareStatement(query)) {
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                return rs.getBigDecimal(1);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+            System.out.println("4");
+        }
+        return null;
+    }
+    
+    
+    public BigDecimal getTotalMoneyByYear() {
+        String query = """
+                        SELECT SUM(total_money)
+                        FROM dbo.bills 
+                        WHERE CAST(time_create AS DATE)  BETWEEN CAST((GETDATE() - 365) AS DATE) AND CAST(GETDATE() AS DATE) AND status = 1
+                       """;
+        try (Connection con = DBConnect.getConnection(); PreparedStatement stm = con.prepareStatement(query)) {
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                return rs.getBigDecimal(1);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+            System.out.println("4");
+        }
+        return null;
+    }
+    
+    public BigDecimal getTotalMoneyByDate(String timeStart, String timeEnd) {
+        String query = """
+                        DECLARE @time_start DATE, @time_end DATE
+                        SET @time_start = CAST(? AS DATE)
+                        SET @time_end = CAST(? AS DATE)
+                        SELECT SUM(total_money)
+                        FROM dbo.bills 
+                        WHERE CAST(time_create AS DATE)  BETWEEN @time_start AND @time_end AND status = 1
+                       """;
+        try (Connection con = DBConnect.getConnection(); PreparedStatement stm = con.prepareStatement(query)) {
+            stm.setString(1, timeStart);
+            stm.setString(2, timeEnd);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                return rs.getBigDecimal(1);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+            System.out.println("4");
+        }
+        return null;
+    }
+
     public static void main(String[] args) {
 
         BillsRepository billsRepository = new BillsRepository();
         BillsSearchRequest billsSearchRequest = new BillsSearchRequest("Minh", null, null, "2024-03-29", "2024-03-29");
-        System.out.println(billsRepository.getAllBillsSearch(billsSearchRequest).size());
+        
+        System.out.println(billsRepository.getTotalMoneyByDate("2022-02-02", "2024-04-01"));
     }
 }

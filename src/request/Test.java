@@ -4,9 +4,8 @@
  */
 package request;
 
-import java.util.Date;
-import response.VoucherResponse;
-import service.impl.VoucherServiceImpl;
+
+import util.GetListMonth;
 
 /**
  *
@@ -15,17 +14,7 @@ import service.impl.VoucherServiceImpl;
 public class Test {
 
     public static void main(String[] args) {
-        VoucherServiceImpl voucherServiceImpl = new VoucherServiceImpl();
-        System.out.println(voucherServiceImpl.setDisableVoucher("JDGFFED"));
-//        VoucherResponse voucher = voucherServiceImpl.getVoucherById("JDGFFED");
-//        Date today = new Date();
-//        if (today.compareTo(voucher.getTimeStart()) < 0) {
-//            System.out.println("chưa đến ngày áp dụng");
-//        }
-//        
-//        if (today.compareTo(voucher.getTimeEnd()) > 0) {
-//            System.out.println("đã hết hạn");
-//        }
-        
+        System.out.println(GetListMonth.getListMonth());
+
     }
 }
