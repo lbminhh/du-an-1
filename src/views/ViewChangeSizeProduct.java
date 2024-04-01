@@ -62,6 +62,11 @@ public class ViewChangeSizeProduct extends javax.swing.JDialog {
         buttonCustom3.setColor1(new java.awt.Color(255, 51, 102));
         buttonCustom3.setColor2(new java.awt.Color(255, 0, 51));
         buttonCustom3.setFont(new java.awt.Font("Source Sans Pro SemiBold", 1, 14)); // NOI18N
+        buttonCustom3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonCustom3ActionPerformed(evt);
+            }
+        });
 
         table1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -131,6 +136,10 @@ public class ViewChangeSizeProduct extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void buttonCustom3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCustom3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_buttonCustom3ActionPerformed
 
     /**
      * @param args the command line arguments

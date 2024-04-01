@@ -3,8 +3,19 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/duan1/du-an-1/src/components/Combobox.java</file>
             <file>file:/C:/duan1/du-an-1/src/views/View.java</file>
+            <file>file:/C:/duan1/du-an-1/src/service/Service.java</file>
+            <file>file:/C:/duan1/du-an-1/src/request/CustomerHistorySearchRequest.java</file>
+            <file>file:/C:/duan1/du-an-1/src/repository/CustomerRepository.java</file>
+            <file>file:/C:/duan1/du-an-1/src/request/CustomerHistoryRequest.java</file>
+            <file>file:/C:/duan1/du-an-1/src/views/ViewChangeMaterialProduct.java</file>
+            <file>file:/C:/duan1/du-an-1/src/views/ViewChooseKhachHang.java</file>
+            <file>file:/C:/duan1/du-an-1/src/response/CustomerReponse.java</file>
+            <file>file:/C:/duan1/du-an-1/src/response/CustomerHistoryReponse.java</file>
+            <file>file:/C:/duan1/du-an-1/src/service/CustomerService.java</file>
+            <file>file:/C:/duan1/du-an-1/src/views/ViewThemTaiKhoanNV.java</file>
+            <file>file:/C:/duan1/du-an-1/src/request/CustomerSearchRequest.java</file>
+            <file>file:/C:/duan1/du-an-1/src/service/impl/CustomerServiceImpl.java</file>
         </group>
     </open-files>
 </project-private>
