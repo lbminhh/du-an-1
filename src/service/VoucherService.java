@@ -5,6 +5,7 @@
 package service;
 
 import java.util.List;
+import request.VoucherRequest;
 import response.VoucherResponse;
 
 /**
@@ -12,6 +13,8 @@ import response.VoucherResponse;
  * @author LE MINH
  */
 public interface VoucherService {
+    
+    List<VoucherResponse> getAllVoucherNoCustomer();
     
     List<VoucherResponse> getAllVoucher();
     
@@ -22,4 +25,8 @@ public interface VoucherService {
     boolean setDisableVoucher(String idVoucher);
     
     boolean setEnableVoucher(String idVoucher);
+    
+    boolean addVoucher(VoucherRequest voucherRequest);
+    
+    boolean updateVoucher(VoucherRequest voucherRequest);
 }

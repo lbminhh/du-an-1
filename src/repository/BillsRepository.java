@@ -5,7 +5,6 @@
 package repository;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,7 +26,7 @@ public class BillsRepository {
                        SELECT bills.id, bills.time_create, total_money, employee.id, customer.full_name, phone, bills.status, bills.customer_id, reduce_money, id_voucher
                        FROM dbo.bills JOIN dbo.employee ON employee.id = bills.employee_id
                        			   JOIN dbo.customer ON customer.id = bills.customer_id
-                       WHERE bills.status = 0
+                       WHERE bills.status IS NULL
                        ORDER BY bills.time_create DESC
                        """;
         List<BillsResponse> list = new ArrayList<>();
@@ -85,7 +84,7 @@ public class BillsRepository {
                        VALUES
                        (   ?,   -- id - varchar(10)
                            ?,   -- customer_id - varchar(10)
-                           ?, -- status - bit
+                           NULL, -- status - bit
                            ?, -- phone - varchar(55)
                            ?, -- total_money - money
                            NULL, -- payment_id - int
@@ -99,12 +98,11 @@ public class BillsRepository {
         try (Connection con = DBConnect.getConnection(); PreparedStatement stm = con.prepareStatement(query)) {
             stm.setString(1, getIdBills());
             stm.setString(2, billsRequest.getIdCustomer());
-            stm.setBoolean(3, billsRequest.getStatus());
-            stm.setString(4, billsRequest.getPhoneNumber());
-            stm.setBigDecimal(5, billsRequest.getTotalMoney());
-            stm.setString(6, billsRequest.getIdEmployee());
-            stm.setString(7, billsRequest.getIdVoucher());
-            stm.setBigDecimal(8, billsRequest.getReduceMoney());
+            stm.setString(3, billsRequest.getPhoneNumber());
+            stm.setBigDecimal(4, billsRequest.getTotalMoney());
+            stm.setString(5, billsRequest.getIdEmployee());
+            stm.setString(6, billsRequest.getIdVoucher());
+            stm.setBigDecimal(7, billsRequest.getReduceMoney());
             check = stm.executeUpdate();
         } catch (Exception e) {
             System.out.println(e);
@@ -149,7 +147,7 @@ public class BillsRepository {
 
     private static String getIdBills() {
         String query = """
-                        SELECT MAX(SUBSTRING(id, 3, LEN(id))) FROM dbo.bills
+                        SELECT MAX(CAST((SUBSTRING(id, 3, 5)) AS INT)) FROM dbo.bills
                        """;
         String result = "";
         try (Connection con = DBConnect.getConnection(); PreparedStatement stm = con.prepareStatement(query)) {
@@ -310,6 +308,23 @@ public class BillsRepository {
         }
         return null;
     }
+    
+    public boolean cancelBills(String idBills) {
+        String query = """
+                        UPDATE dbo.bills
+                        SET status = 0
+                        WHERE id = ?
+                       """;
+        int check = 0;
+        try (Connection con = DBConnect.getConnection(); PreparedStatement stm = con.prepareStatement(query)) {
+            stm.setString(1, idBills);
+            check = stm.executeUpdate();
+        } catch (Exception e) {
+            System.out.println(e);
+            System.out.println("4");
+        }
+        return check > 0;
+    }
 
     public List<BillsResponse> getAllBillsSearch(BillsSearchRequest billsSearchRequest) {
         String query = """
@@ -382,7 +397,7 @@ public class BillsRepository {
             System.out.println(e);
             System.out.println("4");
         }
-        return null;
+        return BigDecimal.ZERO;
     }
     
     public BigDecimal getTotalMoneyBy7Days() {
@@ -400,7 +415,7 @@ public class BillsRepository {
             System.out.println(e);
             System.out.println("4");
         }
-        return null;
+        return BigDecimal.ZERO;
     }
     
     public BigDecimal getTotalMoneyByMonth() {
@@ -418,7 +433,7 @@ public class BillsRepository {
             System.out.println(e);
             System.out.println("4");
         }
-        return null;
+        return BigDecimal.ZERO;
     }
     
     
@@ -437,7 +452,7 @@ public class BillsRepository {
             System.out.println(e);
             System.out.println("4");
         }
-        return null;
+        return BigDecimal.ZERO;
     }
     
     public BigDecimal getTotalMoneyByDate(String timeStart, String timeEnd) {
@@ -460,7 +475,7 @@ public class BillsRepository {
             System.out.println(e);
             System.out.println("4");
         }
-        return null;
+        return BigDecimal.ZERO;
     }
 
     public static void main(String[] args) {

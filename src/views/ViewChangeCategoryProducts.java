@@ -54,7 +54,7 @@ public class ViewChangeCategoryProducts extends javax.swing.JDialog {
         Long id = categoryResponse.getId();
         String categoryName = txtTheLoai.getText().trim();
         if (categoryName.isEmpty()) {
-            Notification notification = new Notification(View.getJframe(), Notification.Type.WARNING, Notification.Location.TOP_RIGHT, "Vui lòng nhập tên thể loại!");
+            Notification notification = new Notification(View.getJframe(null), Notification.Type.WARNING, Notification.Location.TOP_RIGHT, "Vui lòng nhập tên thể loại!");
             notification.showNotification();
             return null;
         }
@@ -69,7 +69,7 @@ public class ViewChangeCategoryProducts extends javax.swing.JDialog {
         if (categoryServiceImpl.addCategory(getData())) {
             View view = (View) SwingUtilities.getWindowAncestor(this);
             view.updateComboboxTheLoai("add");
-            Notification notification = new Notification(View.getJframe(), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Thêm thành công!");
+            Notification notification = new Notification(View.getJframe(null), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Thêm thành công!");
             notification.showNotification();
             this.dispose();
         }
@@ -79,7 +79,7 @@ public class ViewChangeCategoryProducts extends javax.swing.JDialog {
         if (categoryServiceImpl.updateCategory(getData())) {
             View view = (View) SwingUtilities.getWindowAncestor(this);
             view.updateComboboxTheLoai("update");
-            Notification notification = new Notification(View.getJframe(), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Sửa thành công!");
+            Notification notification = new Notification(View.getJframe(null), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Sửa thành công!");
             notification.showNotification();
             showDataToTable();
         }
@@ -89,7 +89,7 @@ public class ViewChangeCategoryProducts extends javax.swing.JDialog {
         if (categoryServiceImpl.deleteCategory(getData())) {
             View view = (View) SwingUtilities.getWindowAncestor(this);
             view.updateComboboxTheLoai("update");
-            Notification notification = new Notification(View.getJframe(), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Sửa thành công!");
+            Notification notification = new Notification(View.getJframe(null), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Sửa thành công!");
             notification.showNotification();
             showDataToTable();
         }

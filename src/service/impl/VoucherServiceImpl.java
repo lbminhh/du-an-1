@@ -6,6 +6,7 @@ package service.impl;
 
 import java.util.List;
 import repository.VoucherRepository;
+import request.VoucherRequest;
 import response.VoucherResponse;
 import service.VoucherService;
 
@@ -18,8 +19,8 @@ public class VoucherServiceImpl implements VoucherService {
     private VoucherRepository voucherRepository = new VoucherRepository();
 
     @Override
-    public List<VoucherResponse> getAllVoucher() {
-        return voucherRepository.getAllVoucher();
+    public List<VoucherResponse> getAllVoucherNoCustomer() {
+        return voucherRepository.getAllVoucherNoCustomer();
     }
 
     @Override
@@ -40,6 +41,21 @@ public class VoucherServiceImpl implements VoucherService {
     @Override
     public boolean setEnableVoucher(String idVoucher) {
         return voucherRepository.setEnableVoucher(idVoucher);
+    }
+
+    @Override
+    public List<VoucherResponse> getAllVoucher() {
+        return voucherRepository.getAllVoucher();
+    }
+
+    @Override
+    public boolean addVoucher(VoucherRequest voucherRequest) {
+        return voucherRepository.addVoucher(voucherRequest);
+    }
+
+    @Override
+    public boolean updateVoucher(VoucherRequest voucherRequest) {
+        return voucherRepository.updateVoucher(voucherRequest);
     }
 
 }

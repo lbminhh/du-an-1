@@ -4,10 +4,8 @@ import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
@@ -44,8 +42,7 @@ public class Notification extends javax.swing.JComponent {
         dialog.add(this);
         dialog.setSize(getPreferredSize());
         if (type == Type.SUCCESS) {
-            Image img = new ImageIcon("./src/components/success.png").getImage();
-            lbIcon.setIcon(new ImageIcon(img));
+            lbIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/components/sucess.png")));
             lbMessage.setText("Success");
         } else if (type == Type.INFO) {
             lbIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/components/info.png")));
@@ -98,7 +95,7 @@ public class Notification extends javax.swing.JComponent {
                         top_to_bot = true;
                     } else if (location == Location.TOP_RIGHT) {
                         x = fram.getX() + fram.getWidth() - dialog.getWidth() - margin;
-                        y = fram.getY() + 40;
+                        y = fram.getY();
                         top_to_bot = true;
                     } else if (location == Location.TOP_LEFT) {
                         x = fram.getX() + margin;
@@ -191,7 +188,7 @@ public class Notification extends javax.swing.JComponent {
         } else if (type == Type.INFO) {
             g2.setColor(new Color(28, 139, 206));
         } else {
-            g2.setColor(new Color(255, 25, 41));
+            g2.setColor(new Color(241, 196, 15));
         }
         g2.fillRect(6, 5, 5, getHeight() - shadowSize * 2 + 1);
         g2.dispose();
@@ -277,7 +274,7 @@ public class Notification extends javax.swing.JComponent {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(20, 20, 20)
+                .addGap(18, 18, 18)
                 .addComponent(lbIcon)
                 .addGap(10, 10, 10)
                 .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)

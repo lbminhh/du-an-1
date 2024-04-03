@@ -39,6 +39,28 @@ public class CustomerRepository {
         }
         return list;
     }
+    
+    public List<CustomerResponse> getListCustomerSearch(String value) {
+        String query = """
+                       SELECT customer.id, full_name, address, phone_number, gender, email, type_name, number_of_purchase
+                       FROM dbo.customer LEFT JOIN dbo.type_customer ON type_customer.id = customer.type_id
+                       WHERE full_name LIKE '%' + ? + '%'
+                       ORDER BY time_create DESC
+                       """;
+        List<CustomerResponse> list = new ArrayList<>();
+        try (Connection con = DBConnect.getConnection(); PreparedStatement stm = con.prepareStatement(query)) {
+            stm.setString(1, value);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                list.add(new CustomerResponse(rs.getString(1), rs.getString(2), rs.getString(3),
+                        rs.getString(4), rs.getBoolean(5), rs.getString(6), rs.getString(7), rs.getInt(8)));
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+            System.out.println("1");
+        }
+        return list;
+    }
 
     public CustomerResponse getCustomerById(String id) {
         String query = """

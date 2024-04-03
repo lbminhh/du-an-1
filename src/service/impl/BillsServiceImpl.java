@@ -110,4 +110,9 @@ public class BillsServiceImpl implements BillsService {
         return billsRepository.getTotalMoneyByDate(timeStart, timeEnd);
     }
 
+    @Override
+    public boolean cancelBills(String idBills) {
+        return billsRepository.cancelBills(idBills);
+    }
+
 }

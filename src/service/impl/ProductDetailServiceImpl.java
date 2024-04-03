@@ -69,4 +69,14 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         return productDetailRepository.setPlusQuantityProductDetail(id, quantity);
     }
 
+    @Override
+    public List<ProductDetailResponse> getAllProductDetailShop() {
+        return productDetailRepository.getAllProductDetailShop();
+    }
+
+    @Override
+    public List<ProductDetailResponse> searchListProductDetailShop(ProductDetailSearchRequest item) {
+        return productDetailRepository.searchListProductDetailShop(item);
+    }
+
 }

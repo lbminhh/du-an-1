@@ -34,4 +34,6 @@ public interface CustomerService {
     boolean updateCustomer2(CustomerUpdateRequest item);
     
     boolean addCustomer2(CustomerUpdateRequest item);
+    
+    List<CustomerResponse> getListCustomerSearch(String value);
 }

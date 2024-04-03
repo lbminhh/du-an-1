@@ -49,5 +49,10 @@ public class BillDetailServiceImpl implements BillDetailService{
     public List<BillDetailResponse> getBillDetailByBills(String idBill) {
         return billDetailRepository.getBillDetailByBills(idBill);
     }
+
+    @Override
+    public boolean cancelBillDetail(String idBills) {
+        return billDetailRepository.cancelBillDetail(idBills);
+    }
     
 }

@@ -55,7 +55,7 @@ public class ViewChangeColorProduct extends javax.swing.JDialog {
         Long id = categoryResponse.getId();
         String txtMauSac = txtMau.getText().trim();
         if (txtMauSac.isEmpty()) {
-            Notification notification = new Notification(View.getJframe(), Notification.Type.WARNING, Notification.Location.TOP_RIGHT, "Vui lòng nhập màu!");
+            Notification notification = new Notification(View.getJframe(null), Notification.Type.WARNING, Notification.Location.TOP_RIGHT, "Vui lòng nhập màu!");
             notification.showNotification();
             return null;
         }
@@ -70,7 +70,7 @@ public class ViewChangeColorProduct extends javax.swing.JDialog {
         if (colorServiceImpl.addColor(getData())) {
             View view = (View) SwingUtilities.getWindowAncestor(this);
             view.updateComboboxMauSac("add");
-            Notification notification = new Notification(View.getJframe(), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Thêm thành công!");
+            Notification notification = new Notification(View.getJframe(null), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Thêm thành công!");
             notification.showNotification();
             this.dispose();
         }
@@ -80,7 +80,7 @@ public class ViewChangeColorProduct extends javax.swing.JDialog {
         if (colorServiceImpl.updateCategory(getData())) {
             View view = (View) SwingUtilities.getWindowAncestor(this);
             view.updateComboboxMauSac("update");
-            Notification notification = new Notification(View.getJframe(), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Sửa thành công!");
+            Notification notification = new Notification(View.getJframe(null), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Sửa thành công!");
             notification.showNotification();
             showDataToTable();
         }
@@ -90,7 +90,7 @@ public class ViewChangeColorProduct extends javax.swing.JDialog {
         if (colorServiceImpl.deleteCategory(getData())) {
             View view = (View) SwingUtilities.getWindowAncestor(this);
             view.updateComboboxMauSac("update");
-            Notification notification = new Notification(View.getJframe(), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Sửa thành công!");
+            Notification notification = new Notification(View.getJframe(null), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Sửa thành công!");
             notification.showNotification();
             showDataToTable();
         }

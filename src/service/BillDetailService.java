@@ -27,4 +27,6 @@ public interface BillDetailService {
     boolean deleteBillDetail(Long idProductDetail, String idBill);
     
     List<BillDetailResponse> getBillDetailByBills(String idBill);
+    
+    boolean cancelBillDetail(String idBills);
 }

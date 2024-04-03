@@ -53,7 +53,7 @@ public class ViewChangeSizeProduct extends javax.swing.JDialog {
         Long id = categoryResponse.getId();
         String sizeName = txtKichCo.getText().trim();
         if (sizeName.isEmpty()) {
-            Notification notification = new Notification(View.getJframe(), Notification.Type.WARNING, Notification.Location.TOP_RIGHT, "Vui lòng nhập size!");
+            Notification notification = new Notification(View.getJframe(null), Notification.Type.WARNING, Notification.Location.TOP_RIGHT, "Vui lòng nhập size!");
             notification.showNotification();
             return null;
         }
@@ -68,7 +68,7 @@ public class ViewChangeSizeProduct extends javax.swing.JDialog {
         if (sizeServiceImpl.addSize(getData())) {
             View view = (View) SwingUtilities.getWindowAncestor(this);
             view.updateComboboxSize("add");
-            Notification notification = new Notification(View.getJframe(), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Thêm thành công!");
+            Notification notification = new Notification(View.getJframe(null), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Thêm thành công!");
             notification.showNotification();
             this.dispose();
         }
@@ -78,7 +78,7 @@ public class ViewChangeSizeProduct extends javax.swing.JDialog {
         if (sizeServiceImpl.updateSize(getData())) {
             View view = (View) SwingUtilities.getWindowAncestor(this);
             view.updateComboboxSize("update");
-            Notification notification = new Notification(View.getJframe(), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Sửa thành công!");
+            Notification notification = new Notification(View.getJframe(null), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Sửa thành công!");
             notification.showNotification();
             showDataToTable();
         }
@@ -88,7 +88,7 @@ public class ViewChangeSizeProduct extends javax.swing.JDialog {
         if (sizeServiceImpl.deleteSize(getData())) {
             View view = (View) SwingUtilities.getWindowAncestor(this);
             view.updateComboboxSize("update");
-            Notification notification = new Notification(View.getJframe(), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Sửa thành công!");
+            Notification notification = new Notification(View.getJframe(null), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Sửa thành công!");
             notification.showNotification();
             showDataToTable();
         }

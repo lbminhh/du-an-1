@@ -55,7 +55,7 @@ public class ViewChangSoleProduct extends javax.swing.JDialog {
         Long id = soleShoesResponse.getId();
         String txtSole = txtDeGiay.getText().trim();
         if (txtSole.isEmpty()) {
-            Notification notification = new Notification(View.getJframe(), Notification.Type.WARNING, Notification.Location.TOP_RIGHT, "Vui lòng nhập đế giày!");
+            Notification notification = new Notification(View.getJframe(null), Notification.Type.WARNING, Notification.Location.TOP_RIGHT, "Vui lòng nhập đế giày!");
             notification.showNotification();
             return null;
         }
@@ -70,7 +70,7 @@ public class ViewChangSoleProduct extends javax.swing.JDialog {
         if (soleServiceImpl.addSole(getData())) {
             View view = (View) SwingUtilities.getWindowAncestor(this);
             view.updateComboboxSole("add");
-            Notification notification = new Notification(View.getJframe(), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Thêm thành công!");
+            Notification notification = new Notification(View.getJframe(null), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Thêm thành công!");
             notification.showNotification();
             this.dispose();
         }
@@ -80,7 +80,7 @@ public class ViewChangSoleProduct extends javax.swing.JDialog {
         if (soleServiceImpl.updateSole(getData())) {
             View view = (View) SwingUtilities.getWindowAncestor(this);
             view.updateComboboxSole("update");
-            Notification notification = new Notification(View.getJframe(), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Sửa thành công!");
+            Notification notification = new Notification(View.getJframe(null), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Sửa thành công!");
             notification.showNotification();
             showDataToTable();
         }
@@ -90,7 +90,7 @@ public class ViewChangSoleProduct extends javax.swing.JDialog {
         if (soleServiceImpl.deleteSole(getData())) {
             View view = (View) SwingUtilities.getWindowAncestor(this);
             view.updateComboboxSole("delete");
-            Notification notification = new Notification(View.getJframe(), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Sửa thành công!");
+            Notification notification = new Notification(View.getJframe(null), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Sửa thành công!");
             notification.showNotification();
             showDataToTable();
         }

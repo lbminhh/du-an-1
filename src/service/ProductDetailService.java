@@ -34,4 +34,8 @@ public interface ProductDetailService {
     boolean setMinusQuantityProductDetail(Long id, int quantity);
     
     boolean setPlusQuantityProductDetail(Long id, int quantity);
+    
+    List<ProductDetailResponse> getAllProductDetailShop();
+    
+    List<ProductDetailResponse> searchListProductDetailShop(ProductDetailSearchRequest item);
 }

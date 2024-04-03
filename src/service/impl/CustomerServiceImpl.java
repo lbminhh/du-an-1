@@ -68,5 +68,10 @@ public class CustomerServiceImpl implements CustomerService{
     public boolean addCustomer2(CustomerUpdateRequest item) {
         return customerRepository.addCustomer2(item);
     }
+
+    @Override
+    public List<CustomerResponse> getListCustomerSearch(String value) {
+        return customerRepository.getListCustomerSearch(value);
+    }
     
 }

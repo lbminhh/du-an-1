@@ -53,7 +53,7 @@ public class ViewChangeMaterialProduct extends javax.swing.JDialog {
         Long id = categoryResponse.getId();
         String materialName = txtChatLieu.getText().trim();
         if (materialName.isEmpty()) {
-            Notification notification = new Notification(View.getJframe(), Notification.Type.WARNING, Notification.Location.TOP_RIGHT, "Vui lòng nhập chất liệu!");
+            Notification notification = new Notification(View.getJframe(null), Notification.Type.WARNING, Notification.Location.TOP_RIGHT, "Vui lòng nhập chất liệu!");
             notification.showNotification();
             return null;
         }
@@ -68,7 +68,7 @@ public class ViewChangeMaterialProduct extends javax.swing.JDialog {
         if (materialServiceImpl.addMaterial(getData())) {
             View view = (View) SwingUtilities.getWindowAncestor(this);
             view.updateComboboxMaterial("add");
-            Notification notification = new Notification(View.getJframe(), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Thêm thành công!");
+            Notification notification = new Notification(View.getJframe(null), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Thêm thành công!");
             notification.showNotification();
             this.dispose();
         }
@@ -78,7 +78,7 @@ public class ViewChangeMaterialProduct extends javax.swing.JDialog {
         if (materialServiceImpl.updateMaterial(getData())) {
             View view = (View) SwingUtilities.getWindowAncestor(this);
             view.updateComboboxMaterial("update");
-            Notification notification = new Notification(View.getJframe(), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Sửa thành công!");
+            Notification notification = new Notification(View.getJframe(null), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Sửa thành công!");
             notification.showNotification();
             showDataToTable();
         }
@@ -88,7 +88,7 @@ public class ViewChangeMaterialProduct extends javax.swing.JDialog {
         if (materialServiceImpl.deleteMaterial(getData())) {
             View view = (View) SwingUtilities.getWindowAncestor(this);
             view.updateComboboxMaterial("update");
-            Notification notification = new Notification(View.getJframe(), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Sửa thành công!");
+            Notification notification = new Notification(View.getJframe(null), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Sửa thành công!");
             notification.showNotification();
             showDataToTable();
         }

@@ -168,6 +168,23 @@ public class BillDetailRepository {
         return list;
     }
     
+    public boolean cancelBillDetail(String idBills) {
+        String query = """
+                        UPDATE dbo.bill_detail
+                        SET status = 0
+                        WHERE bill_id = ?
+                       """;
+        int check = 0;
+        try (Connection con = DBConnect.getConnection(); PreparedStatement stm = con.prepareStatement(query)) {
+            stm.setString(1, idBills);
+            check = stm.executeUpdate();
+        } catch (Exception e) {
+            System.out.println(e);
+            System.out.println("4");
+        }
+        return check > 0;
+    }
+    
     
     
     public static void main(String[] args) {

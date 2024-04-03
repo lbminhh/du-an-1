@@ -53,7 +53,7 @@ public class ViewChangeBrandProducts extends javax.swing.JDialog {
         Long id = brandResponse.getId();
         String brandName = txtHang.getText().trim();
         if (brandName.isEmpty()) {
-            Notification notification = new Notification(View.getJframe(), Notification.Type.WARNING, Notification.Location.TOP_RIGHT, "Vui lòng nhập tên hãng!");
+            Notification notification = new Notification(View.getJframe(null), Notification.Type.WARNING, Notification.Location.TOP_RIGHT, "Vui lòng nhập tên hãng!");
             notification.showNotification();
             return null;
         }
@@ -68,7 +68,7 @@ public class ViewChangeBrandProducts extends javax.swing.JDialog {
         if (brandServiceImpl.addBrand(getData())) {
             View view = (View) SwingUtilities.getWindowAncestor(this);
             view.updateComboboxHang("add");
-            Notification notification = new Notification(View.getJframe(), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Thêm thành công!");
+            Notification notification = new Notification(View.getJframe(null), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Thêm thành công!");
             notification.showNotification();
             this.dispose();
         }
@@ -78,7 +78,7 @@ public class ViewChangeBrandProducts extends javax.swing.JDialog {
         if (brandServiceImpl.updateBrand(getData())) {
             View view = (View) SwingUtilities.getWindowAncestor(this);
             view.updateComboboxHang("update");
-            Notification notification = new Notification(View.getJframe(), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Sửa thành công!");
+            Notification notification = new Notification(View.getJframe(null), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Sửa thành công!");
             notification.showNotification();
             showDataToTable();
         }
@@ -86,7 +86,7 @@ public class ViewChangeBrandProducts extends javax.swing.JDialog {
 
     private void deleteBrand() {
         if (brandServiceImpl.deleteBrand(getData())) {
-            Notification notification = new Notification(View.getJframe(), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Sửa thành công!");
+            Notification notification = new Notification(View.getJframe(null), Notification.Type.SUCCESS, Notification.Location.TOP_RIGHT, "Sửa thành công!");
             notification.showNotification();
             showDataToTable();
         }

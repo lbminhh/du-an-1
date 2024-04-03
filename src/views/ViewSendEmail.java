@@ -50,7 +50,7 @@ public class ViewSendEmail extends javax.swing.JDialog {
             public void itemStateChanged(ItemEvent e) {
                 String value = String.valueOf(cbbVoucher.getSelectedItem());
                 VoucherResponse voucherResponse = new VoucherResponse();
-                for (VoucherResponse item : voucherServiceImpl.getAllVoucher()) {
+                for (VoucherResponse item : voucherServiceImpl.getAllVoucherNoCustomer()) {
                     if (value.contains(item.getId())) {
                         voucherResponse = item;
                     }
@@ -63,7 +63,7 @@ public class ViewSendEmail extends javax.swing.JDialog {
     private void showDataVoucher() {
         cbbVoucher.removeAllItems();
         cbbVoucher.addItem("");
-        for (VoucherResponse item : voucherServiceImpl.getAllVoucher()) {
+        for (VoucherResponse item : voucherServiceImpl.getAllVoucherNoCustomer()) {
             if (item.getType().equalsIgnoreCase("Phần trăm")) {
                 cbbVoucher.addItem(item.getId() + ":     " + item.getValue().setScale(0) + "%" + "     (" + item.getType() + ")");
             } else {
@@ -107,7 +107,7 @@ public class ViewSendEmail extends javax.swing.JDialog {
             messageVoucher = String.valueOf(voucherResponse.getValue().setScale(0)) + "%";
         }
         String firstContent = "Xin chào " + customer.getFullname() + "!\n\n";
-        String middleContent = "Chúc mừng quý khách đã mua đồ lần thứ 5 liên tục tại Sneaker Store. Chúng tôi tặng bạn voucher có giá trị " + messageVoucher + " với mã là " + voucherResponse.getId()
+        String middleContent = "Chúc mừng quý khách đã mua đồ tại Sneaker Store. Chúng tôi tặng bạn voucher có giá trị " + messageVoucher + " với mã là " + voucherResponse.getId()
                 + " áp dụng mọi hoá đơn mua tại cửa hàng, "
                 + "áp dụng từ ngày " + voucherResponse.getTimeStart() + " đến ngày " + voucherResponse.getTimeEnd()
                 + ". Sneaker Store xin cảm ơn quý khách. \n\n";
