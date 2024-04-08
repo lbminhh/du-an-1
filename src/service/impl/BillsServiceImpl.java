@@ -115,4 +115,14 @@ public class BillsServiceImpl implements BillsService {
         return billsRepository.cancelBills(idBills);
     }
 
+    @Override
+    public boolean updateStatusBill(String idBills) {
+        return billsRepository.updateStatusBill(idBills);
+    }
+
+    @Override
+    public boolean cancelVoucherBills(String idBills) {
+        return billsRepository.cancelVoucherBills(idBills);
+    }
+
 }

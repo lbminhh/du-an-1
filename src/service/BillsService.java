@@ -53,4 +53,8 @@ public interface BillsService {
     BigDecimal getTotalMoneyByDate(String timeStart, String timeEnd);
     
     boolean cancelBills(String idBills);
+    
+    boolean updateStatusBill(String idBills);
+    
+    boolean cancelVoucherBills(String idBills);
 }

@@ -33,20 +33,18 @@ public class ViewDataCustomer extends javax.swing.JDialog {
     }
 
     public void showDataToTable() {
-        list = customerServiceImpl.getListCustomer();
+        list = customerServiceImpl.getListCustomerVip();
         tableModel = (DefaultTableModel) tblList.getModel();
         tableModel.setRowCount(0);
         for (int i = 0; i < list.size(); i++) {
             CustomerResponse item = list.get(i);
-            if (item.getTypeCustomer().equalsIgnoreCase("Khách quen")) {
-                tableModel.addRow(new Object[]{
-                    i + 1,
-                    item.getFullname(),
-                    item.getPhoneNumber(),
-                    item.getAddress(),
-                    item.getNumberOfPurchase()
-                });
-            }
+            tableModel.addRow(new Object[]{
+                i + 1,
+                item.getFullname(),
+                item.getPhoneNumber(),
+                item.getAddress(),
+                item.getNumberOfPurchase()
+            });
         }
     }
 
@@ -88,17 +86,17 @@ public class ViewDataCustomer extends javax.swing.JDialog {
 
         tblList.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "STT", "Tên", "Số điện thoại", "Địa chỉ", "Số lần mua"
+                "STT", "Tên", "Số điện thoại", "Địa chỉ"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, true, false
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {

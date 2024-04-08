@@ -4,7 +4,6 @@
  */
 package repository;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -30,13 +29,15 @@ public class VoucherRepository {
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 list.add(new VoucherResponse(rs.getString(1), rs.getBigDecimal(2), rs.getBigDecimal(3),
-                        rs.getDate(4), rs.getDate(5), rs.getBoolean(6), rs.getString(7), rs.getString(8)));
+                        rs.getDate(4), rs.getDate(5), rs.getBoolean(6), rs.getString(7)));
             }
         } catch (Exception e) {
             System.out.println(e);
         }
         return list;
     }
+    
+    
     
     public List<VoucherResponse> getAllVoucher() {
         String query = """
@@ -47,7 +48,7 @@ public class VoucherRepository {
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 list.add(new VoucherResponse(rs.getString(1), rs.getBigDecimal(2), rs.getBigDecimal(3),
-                        rs.getDate(4), rs.getDate(5), rs.getBoolean(6), rs.getString(7), rs.getString(8)));
+                        rs.getDate(4), rs.getDate(5), rs.getBoolean(6), rs.getString(7)));
             }
         } catch (Exception e) {
             System.out.println(e);
@@ -76,14 +77,14 @@ public class VoucherRepository {
     public VoucherResponse getVoucherById(String id) {
         String query = """
                        SELECT * FROM dbo.voucher
-                       WHERE id = ? AND customer_id IS NOT NULL
+                       WHERE id = ?
                        """;
         try (Connection con = DBConnect.getConnection(); PreparedStatement stm = con.prepareStatement(query)) {
             stm.setString(1, id);
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 return new VoucherResponse(rs.getString(1), rs.getBigDecimal(2), rs.getBigDecimal(3),
-                        rs.getDate(4), rs.getDate(5), rs.getBoolean(6), rs.getString(7), rs.getString(8));
+                        rs.getDate(4), rs.getDate(5), rs.getBoolean(6), rs.getString(7));
             }
         } catch (Exception e) {
             System.out.println(e);
@@ -139,8 +140,7 @@ public class VoucherRepository {
                             time_start,
                             time_end,
                             status,
-                            type_voucher,
-                            customer_id
+                            type_voucher
                         )
                         VALUES
                         (   ?,   -- id - varchar(10)
@@ -149,8 +149,7 @@ public class VoucherRepository {
                             ?, -- time_start - date
                             ?, -- time_end - date
                             ?, -- status - bit
-                            ?, -- type_voucher - nvarchar(255)
-                            NULL  -- customer_id - varchar(10)
+                            ? -- type_voucher - nvarchar(255)
                         )
                        """;
         int check = 0;

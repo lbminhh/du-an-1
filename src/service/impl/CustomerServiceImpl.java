@@ -73,5 +73,10 @@ public class CustomerServiceImpl implements CustomerService{
     public List<CustomerResponse> getListCustomerSearch(String value) {
         return customerRepository.getListCustomerSearch(value);
     }
+
+    @Override
+    public List<CustomerResponse> getListCustomerVip() {
+        return customerRepository.getListCustomerVip();
+    }
     
 }

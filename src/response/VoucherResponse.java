@@ -33,6 +33,4 @@ public class VoucherResponse {
     
     private String type;
     
-    private String idCustomer;
-    
 }

@@ -112,6 +112,7 @@ public class BillsRepository {
     }
 
     public boolean updateBill(BillsRequest billsRequest) {
+        System.out.println("update");
         System.out.println(billsRequest);
         if (billsRequest == null) {
             return false;
@@ -137,6 +138,23 @@ public class BillsRepository {
             stm.setString(7, billsRequest.getIdEmployee());
             stm.setBigDecimal(8, billsRequest.getReduceMoney());
             stm.setString(9, billsRequest.getId());
+            check = stm.executeUpdate();
+        } catch (Exception e) {
+            System.out.println(e);
+            System.out.println("1 update");
+        }
+        return check > 0;
+    }
+    
+    public boolean updateStatusBill(String idBills) {
+        String query = """
+                       UPDATE dbo.bills
+                       SET status = NULL
+                       WHERE id = ?
+                       """;
+        int check = 0;
+        try (Connection con = DBConnect.getConnection(); PreparedStatement stm = con.prepareStatement(query)) {
+            stm.setString(1, idBills);
             check = stm.executeUpdate();
         } catch (Exception e) {
             System.out.println(e);
@@ -477,12 +495,29 @@ public class BillsRepository {
         }
         return BigDecimal.ZERO;
     }
+    
+    public boolean cancelVoucherBills(String idBills) {
+        String query = """
+                        UPDATE dbo.bills
+                        SET id_voucher = NULL
+                        WHERE id = ?
+                       """;
+        int check = 0;
+        try (Connection con = DBConnect.getConnection(); PreparedStatement stm = con.prepareStatement(query)) {
+            stm.setString(1, idBills);
+            check = stm.executeUpdate();
+        } catch (Exception e) {
+            System.out.println(e);
+            System.out.println("4");
+        }
+        return check > 0;
+    }
 
     public static void main(String[] args) {
 
         BillsRepository billsRepository = new BillsRepository();
         BillsSearchRequest billsSearchRequest = new BillsSearchRequest("Minh", null, null, "2024-03-29", "2024-03-29");
         
-        System.out.println(billsRepository.getTotalMoneyByDate("2022-02-02", "2024-04-01"));
+        System.out.println(billsRepository.getAllBillsToday());
     }
 }
